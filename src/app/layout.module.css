@@ -1,0 +1,6 @@
+.main {
+  min-height: calc(100vh - 80px - 300px);
+  padding-top: 80px; /* Account for fixed header height */
+  display: flex;
+  flex-direction: column;
+}

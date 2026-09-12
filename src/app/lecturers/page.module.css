@@ -1,35 +1,104 @@
 .container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-.header {
+/* Page Hero */
+.pageHero {
+  background: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-800) 60%, #1a365d 100%);
+  padding: 100px 24px 80px;
   text-align: center;
-  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pageHero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(244, 181, 27, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 70% 50%, rgba(29, 102, 194, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  animation: fadeInUp 0.7s ease-out;
+}
+
+.heroTag {
+  display: inline-block;
+  background: rgba(244, 181, 27, 0.12);
+  color: var(--gold-400);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  padding: 8px 20px;
+  border-radius: 30px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(244, 181, 27, 0.2);
 }
 
 .title {
-  font-size: 2.5rem;
-  color: var(--navy-950);
+  font-size: 2.25rem;
+  color: var(--surface);
   margin-bottom: 16px;
+  font-weight: 800;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
 }
 
 .subtitle {
-  color: var(--muted);
-  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+}
+
+.heroWave {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  line-height: 0;
+}
+
+.heroWave svg {
+  display: block;
+  width: 100%;
+  height: 60px;
+}
+
+/* Content wrapper */
+.content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 24px 80px;
+  width: 100%;
 }
 
 .toolbar {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 40px;
-  background-color: var(--surface);
-  padding: 24px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  padding: 20px 24px;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
+  animation: fadeInUp 0.5s ease-out;
 }
 
 @media (min-width: 768px) {
@@ -41,23 +110,34 @@
 
 .searchBox {
   flex: 1;
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
 }
 
 .searchInput {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 16px 12px 42px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 1rem;
-  background-color: var(--surface-soft);
+  border-radius: 50px;
+  font-size: 0.95rem;
+  background: var(--surface-soft);
   color: var(--text);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .searchInput:focus {
   outline: none;
   border-color: var(--blue-600);
-  background-color: var(--surface);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(29, 102, 194, 0.08);
 }
 
 .filterBox {
@@ -68,24 +148,36 @@
   width: 100%;
   padding: 12px 16px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 1rem;
-  background-color: var(--surface-soft);
+  border-radius: 50px;
+  font-size: 0.95rem;
+  background: var(--surface-soft);
   color: var(--text);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .filterSelect:focus {
   outline: none;
   border-color: var(--blue-600);
-  background-color: var(--surface);
+  background: var(--surface);
+}
+
+.resultCount {
+  margin-bottom: 24px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding-left: 4px;
+}
+
+.resultCount strong {
+  color: var(--navy-950);
+  font-size: 1.05rem;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  gap: 24px;
 }
 
 @media (min-width: 640px) {
@@ -103,9 +195,15 @@
 .emptyState {
   text-align: center;
   padding: 80px 24px;
-  background-color: var(--surface);
+  background: var(--surface);
   border-radius: var(--radius-lg);
   border: 1px dashed var(--border);
+}
+
+.emptyIcon {
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 16px;
 }
 
 .emptyState h3 {
@@ -119,17 +217,17 @@
 }
 
 .resetBtn {
-  background-color: transparent;
+  background: transparent;
   color: var(--blue-600);
-  border: 1px solid var(--blue-600);
-  padding: 8px 24px;
-  border-radius: var(--radius-md);
+  border: 2px solid var(--blue-600);
+  padding: 10px 28px;
+  border-radius: 50px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .resetBtn:hover {
-  background-color: var(--blue-600);
+  background: var(--blue-600);
   color: white;
 }

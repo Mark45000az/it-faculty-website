@@ -2,11 +2,15 @@
   --navy-950: #071a3d;
   --navy-900: #0b2557;
   --navy-800: #103b80;
+  --navy-700: #1a4fa0;
   --blue-600: #1d66c2;
+  --blue-700: #155aa0;
   --gold-500: #f4b51b;
   --gold-400: #ffd45a;
+  --gold-300: #ffe28a;
   --surface: #ffffff;
   --surface-soft: #f5f8fc;
+  --surface-glass: rgba(255, 255, 255, 0.7);
   --text: #14213d;
   --muted: #64748b;
   --border: #dbe4f0;
@@ -21,6 +25,12 @@
   --shadow-sm: 0 4px 14px rgba(8, 35, 80, 0.08);
   --shadow-md: 0 12px 32px rgba(8, 35, 80, 0.12);
   --shadow-lg: 0 24px 60px rgba(8, 35, 80, 0.18);
+  --shadow-glow: 0 0 40px rgba(244, 181, 27, 0.15);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -68,4 +78,84 @@ button {
 
 input, textarea, select {
   font-family: inherit;
+}
+
+/* Global keyframes for reusable animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Utility classes for scroll-triggered animations */
+.animate-fade-up {
+  animation: fadeInUp 0.7s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out both;
 }

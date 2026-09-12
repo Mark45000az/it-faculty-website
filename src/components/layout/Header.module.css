@@ -4,17 +4,18 @@
   left: 0;
   right: 0;
   height: 80px;
-  background-color: var(--surface);
-  box-shadow: var(--shadow-sm);
+  background-color: transparent;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
 }
 
 .header.scrolled {
   height: 70px;
-  box-shadow: var(--shadow-md);
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(219, 228, 240, 0.5);
 }
 
 .container {
@@ -31,17 +32,31 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  transition: transform 0.3s ease;
+}
+
+.logoLink:hover {
+  transform: scale(1.02);
 }
 
 .logoImage {
   height: 48px;
   width: auto;
   object-fit: contain;
+  border-radius: 50%;
+  background: white;
+  padding: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .logoText {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
+  color: var(--surface);
+  transition: color 0.4s ease;
+}
+
+.header.scrolled .logoText {
   color: var(--navy-900);
 }
 
@@ -61,50 +76,79 @@
 }
 
 .navLink {
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
+  padding: 4px 0;
 }
 
-.navLink:hover {
-  color: var(--blue-600);
+.header.scrolled .navLink {
+  color: var(--text);
 }
 
-.navLink.active {
-  color: var(--blue-600);
-}
-
-.navLink.active::after {
+.navLink::after {
   content: '';
   position: absolute;
   bottom: -4px;
   left: 0;
   right: 0;
   height: 2px;
-  background-color: var(--gold-500);
+  background: linear-gradient(90deg, var(--gold-500), var(--gold-400));
   border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.navLink:hover {
+  color: var(--gold-400);
+}
+
+.header.scrolled .navLink:hover {
+  color: var(--blue-600);
+}
+
+.navLink:hover::after,
+.navLink.active::after {
+  transform: scaleX(1);
+}
+
+.navLink.active {
+  color: var(--gold-400);
+}
+
+.header.scrolled .navLink.active {
+  color: var(--blue-600);
 }
 
 .ctaButton {
-  background-color: var(--gold-500);
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-400));
   color: var(--navy-950);
-  font-weight: 600;
-  padding: 10px 24px;
-  border-radius: var(--radius-md);
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  font-weight: 700;
+  padding: 10px 26px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(244, 181, 27, 0.25);
 }
 
 .ctaButton:hover {
-  background-color: var(--gold-400);
   transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(244, 181, 27, 0.4);
 }
 
 .mobileMenuBtn {
-  background: none;
+  background: rgba(255, 255, 255, 0.1);
   font-size: 1.5rem;
+  color: var(--surface);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.header.scrolled .mobileMenuBtn {
   color: var(--navy-900);
-  padding: 8px;
+  background: rgba(7, 26, 61, 0.05);
 }
 
 .mobileNav {
@@ -112,13 +156,15 @@
   top: 100%;
   left: 0;
   right: 0;
-  background-color: var(--surface);
-  padding: 16px 24px;
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  padding: 20px 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   animation: slideDown 0.3s ease;
+  border-bottom: 3px solid var(--gold-500);
 }
 
 @keyframes slideDown {
@@ -127,22 +173,30 @@
 }
 
 .mobileNavLink {
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  border-radius: 12px;
   font-weight: 500;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+.mobileNavLink:hover {
+  background: var(--surface-soft);
 }
 
 .mobileNavLink.activeMobile {
   color: var(--blue-600);
   font-weight: 700;
+  background: rgba(29, 102, 194, 0.06);
 }
 
 .mobileCtaButton {
-  background-color: var(--gold-500);
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-400));
   color: var(--navy-950);
-  font-weight: 600;
-  padding: 12px;
-  border-radius: var(--radius-md);
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 50px;
   text-align: center;
   margin-top: 8px;
+  box-shadow: 0 2px 10px rgba(244, 181, 27, 0.25);
 }

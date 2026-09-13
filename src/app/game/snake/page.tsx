@@ -40,7 +40,7 @@ export default function GamePage() {
   // Fetch leaderboard
   const fetchLeaderboard = useCallback(async () => {
     try {
-      const res = await fetch("/api/scores?gameType=snake");
+      const res = await fetch(`/api/scores?gameType=snake&t=${Date.now()}`);
       if (!res.ok) return;
       const data = await res.json();
       if (data.scores) {

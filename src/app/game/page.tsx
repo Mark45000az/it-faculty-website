@@ -32,6 +32,7 @@ export default function GamePage() {
   const gameLoopRef = useRef<number | null>(null);
   const snakeRef = useRef<{ x: number; y: number }[]>([{ x: 10, y: 10 }]);
   const directionRef = useRef<Direction>("RIGHT");
+  const directionQueueRef = useRef<Direction[]>([]);
   const foodRef = useRef<{ x: number; y: number }>({ x: 15, y: 10 });
   const scoreRef = useRef(0);
   const speedRef = useRef(150);
@@ -218,6 +219,11 @@ export default function GamePage() {
 
   // Game tick
   const gameTick = useCallback(() => {
+    // ดึงคำสั่งเลี้ยวจาก Queue (ถ้ามี)
+    if (directionQueueRef.current.length > 0) {
+      directionRef.current = directionQueueRef.current.shift()!;
+    }
+
     const snake = [...snakeRef.current];
     const head = { ...snake[0] };
     const dir = directionRef.current;
@@ -280,6 +286,7 @@ export default function GamePage() {
     // Reset
     snakeRef.current = [{ x: 10, y: 10 }];
     directionRef.current = "RIGHT";
+    directionQueueRef.current = [];
     scoreRef.current = 0;
     speedRef.current = 150;
     setScore(0);
@@ -306,32 +313,43 @@ export default function GamePage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (gameState !== "playing") return;
 
-      const dir = directionRef.current;
+      // ดูทิศทางล่าสุดที่กำลังจะไป (จากคิวตัวสุดท้าย หรือทิศทางปัจจุบัน)
+      const lastDir = directionQueueRef.current.length > 0 
+        ? directionQueueRef.current[directionQueueRef.current.length - 1] 
+        : directionRef.current;
+        
+      let newDir: Direction | null = null;
+
       switch (e.key) {
         case "ArrowUp":
         case "w":
         case "W":
           e.preventDefault();
-          if (dir !== "DOWN") directionRef.current = "UP";
+          if (lastDir !== "DOWN" && lastDir !== "UP") newDir = "UP";
           break;
         case "ArrowDown":
         case "s":
         case "S":
           e.preventDefault();
-          if (dir !== "UP") directionRef.current = "DOWN";
+          if (lastDir !== "UP" && lastDir !== "DOWN") newDir = "DOWN";
           break;
         case "ArrowLeft":
         case "a":
         case "A":
           e.preventDefault();
-          if (dir !== "RIGHT") directionRef.current = "LEFT";
+          if (lastDir !== "RIGHT" && lastDir !== "LEFT") newDir = "LEFT";
           break;
         case "ArrowRight":
         case "d":
         case "D":
           e.preventDefault();
-          if (dir !== "LEFT") directionRef.current = "RIGHT";
+          if (lastDir !== "LEFT" && lastDir !== "RIGHT") newDir = "RIGHT";
           break;
+      }
+      
+      // ถ้าเปลี่ยนทิศทาง ให้ใส่ในคิว (สูงสุด 2 คำสั่งเพื่อไม่ให้หน่วงเกินไป)
+      if (newDir && directionQueueRef.current.length < 2) {
+        directionQueueRef.current.push(newDir);
       }
     };
 
@@ -368,11 +386,20 @@ export default function GamePage() {
   // Touch controls for mobile
   const handleTouchControl = (dir: Direction) => {
     if (gameState !== "playing") return;
-    const current = directionRef.current;
-    if (dir === "UP" && current !== "DOWN") directionRef.current = "UP";
-    if (dir === "DOWN" && current !== "UP") directionRef.current = "DOWN";
-    if (dir === "LEFT" && current !== "RIGHT") directionRef.current = "LEFT";
-    if (dir === "RIGHT" && current !== "LEFT") directionRef.current = "RIGHT";
+    
+    const lastDir = directionQueueRef.current.length > 0 
+      ? directionQueueRef.current[directionQueueRef.current.length - 1] 
+      : directionRef.current;
+      
+    let isValid = false;
+    if (dir === "UP" && lastDir !== "DOWN" && lastDir !== "UP") isValid = true;
+    if (dir === "DOWN" && lastDir !== "UP" && lastDir !== "DOWN") isValid = true;
+    if (dir === "LEFT" && lastDir !== "RIGHT" && lastDir !== "LEFT") isValid = true;
+    if (dir === "RIGHT" && lastDir !== "LEFT" && lastDir !== "RIGHT") isValid = true;
+    
+    if (isValid && directionQueueRef.current.length < 2) {
+      directionQueueRef.current.push(dir);
+    }
   };
 
   return (

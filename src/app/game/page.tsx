@@ -90,6 +90,22 @@ export default function GamePage() {
       ctx.stroke();
     }
 
+    // Border walls (visible glowing boundary)
+    ctx.shadowColor = "#ef4444";
+    ctx.shadowBlur = 6;
+    ctx.strokeStyle = "rgba(239, 68, 68, 0.7)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(1.5, 1.5, CANVAS_SIZE - 3, CANVAS_SIZE - 3);
+    ctx.shadowBlur = 0;
+
+    // Corner markers
+    const cornerSize = 12;
+    ctx.fillStyle = "rgba(239, 68, 68, 0.5)";
+    ctx.fillRect(0, 0, cornerSize, cornerSize);
+    ctx.fillRect(CANVAS_SIZE - cornerSize, 0, cornerSize, cornerSize);
+    ctx.fillRect(0, CANVAS_SIZE - cornerSize, cornerSize, cornerSize);
+    ctx.fillRect(CANVAS_SIZE - cornerSize, CANVAS_SIZE - cornerSize, cornerSize, cornerSize);
+
     // Food (golden glow)
     const food = foodRef.current;
     ctx.shadowColor = "#f4b51b";

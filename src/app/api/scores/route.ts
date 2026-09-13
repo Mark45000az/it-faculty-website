@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-// GET — ดึง Top 10 คะแนนสูงสุด
+// GET — ดึง Top 10 คะแนนสูงสุด (ไม่ซ้ำชื่อ)
 export async function GET() {
   try {
     if (!isSupabaseConfigured()) {
@@ -12,14 +12,27 @@ export async function GET() {
       .from('scores')
       .select('*')
       .order('score', { ascending: false })
-      .limit(10);
+      .limit(100);
 
     if (error) {
       console.error('Supabase scores error:', error);
       return NextResponse.json({ scores: [] });
     }
 
-    return NextResponse.json({ scores: data });
+    // เอาเฉพาะคะแนนสูงสุดของแต่ละคน (ไม่ซ้ำชื่อ)
+    const bestScores = new Map<string, typeof data[0]>();
+    for (const entry of data || []) {
+      const existing = bestScores.get(entry.nickname);
+      if (!existing || entry.score > existing.score) {
+        bestScores.set(entry.nickname, entry);
+      }
+    }
+
+    const top10 = Array.from(bestScores.values())
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+
+    return NextResponse.json({ scores: top10 });
   } catch {
     return NextResponse.json({ scores: [] });
   }

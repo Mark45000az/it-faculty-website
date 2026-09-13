@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-// GET — ดึง Top 10 คะแนนสูงสุด (ไม่ซ้ำชื่อ)
+// GET — ดึง Top 10 คะแนนสูงสุด (ไม่ซ้ำคน)
 export async function GET() {
   try {
     if (!isSupabaseConfigured()) {
@@ -12,19 +12,20 @@ export async function GET() {
       .from('scores')
       .select('*')
       .order('score', { ascending: false })
-      .limit(100);
+      .limit(200);
 
     if (error) {
       console.error('Supabase scores error:', error);
       return NextResponse.json({ scores: [] });
     }
 
-    // เอาเฉพาะคะแนนสูงสุดของแต่ละคน (ไม่ซ้ำชื่อ)
+    // เอาเฉพาะคะแนนสูงสุดของแต่ละคน — จำด้วย player_id (ถ้ามี) หรือ nickname
     const bestScores = new Map<string, typeof data[0]>();
     for (const entry of data || []) {
-      const existing = bestScores.get(entry.nickname);
+      const key = entry.player_id || entry.nickname; // ใช้ player_id เป็นหลัก
+      const existing = bestScores.get(key);
       if (!existing || entry.score > existing.score) {
-        bestScores.set(entry.nickname, entry);
+        bestScores.set(key, entry);
       }
     }
 
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { nickname, score } = body;
+    const { nickname, score, player_id } = body;
 
     if (!nickname || typeof nickname !== 'string' || nickname.trim().length === 0) {
       return NextResponse.json(
@@ -70,6 +71,7 @@ export async function POST(request: NextRequest) {
       .insert([{
         nickname: nickname.trim().substring(0, 50),
         score: Math.floor(score),
+        player_id: player_id || null,
       }])
       .select()
       .single();

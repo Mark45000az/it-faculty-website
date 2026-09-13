@@ -25,7 +25,6 @@ export default function GamePage() {
   const [leaderboard, setLeaderboard] = useState<Score[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
-  const playerIdRef = useRef<string>("");
 
   // Game logic refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -56,13 +55,6 @@ export default function GamePage() {
     if (savedNickname) {
       setNickname(savedNickname);
     }
-    // สร้างหรือโหลด Player ID ประจำเครื่อง
-    let pid = localStorage.getItem('snake_player_id');
-    if (!pid) {
-      pid = 'player_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
-      localStorage.setItem('snake_player_id', pid);
-    }
-    playerIdRef.current = pid;
   }, [fetchLeaderboard]);
 
   // Spawn food at random position
@@ -345,7 +337,7 @@ export default function GamePage() {
       await fetch("/api/scores", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nickname: nickname.trim(), score, player_id: playerIdRef.current }),
+        body: JSON.stringify({ nickname: nickname.trim(), score }),
       });
       setScoreSubmitted(true);
       await fetchLeaderboard();

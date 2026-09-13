@@ -48,7 +48,7 @@
 
 @media (min-width: 768px) {
   .grid {
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
   }
 }
 
@@ -132,6 +132,70 @@
 .linkList a:hover::before {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* Admin Section */
+.adminSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.adminDesc {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.credentialBox {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.credentialRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.credLabel {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  min-width: 75px;
+}
+
+.credValue {
+  background: rgba(244, 181, 27, 0.12);
+  color: var(--gold-400);
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+.adminButton {
+  display: inline-block;
+  text-align: center;
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-400));
+  color: var(--navy-950);
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(244, 181, 27, 0.2);
+}
+
+.adminButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(244, 181, 27, 0.4);
 }
 
 .bottom {

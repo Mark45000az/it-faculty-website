@@ -34,6 +34,23 @@ export default function Footer() {
               <li><a href="https://www.reru.ac.th/" target="_blank" rel="noopener noreferrer">เว็บไซต์มหาวิทยาลัยราชภัฏร้อยเอ็ด</a></li>
             </ul>
           </div>
+          <div className={styles.adminSection}>
+            <h4 className={styles.linkTitle}>🔐 ระบบหลังบ้าน (Admin)</h4>
+            <p className={styles.adminDesc}>สำหรับเจ้าหน้าที่ดูแลข้อมูลการสมัคร</p>
+            <div className={styles.credentialBox}>
+              <div className={styles.credentialRow}>
+                <span className={styles.credLabel}>Username:</span>
+                <code className={styles.credValue}>admin</code>
+              </div>
+              <div className={styles.credentialRow}>
+                <span className={styles.credLabel}>Password:</span>
+                <code className={styles.credValue}>admin1234</code>
+              </div>
+            </div>
+            <Link href="/admin/login" className={styles.adminButton}>
+              เข้าสู่ระบบ Admin →
+            </Link>
+          </div>
         </div>
         <div className={styles.bottom}>
           <p>&copy; {new Date().getFullYear()} Faculty of Information Technology, Roi Et Rajabhat University. All rights reserved.</p>

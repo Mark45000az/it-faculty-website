@@ -50,6 +50,11 @@ export default function GamePage() {
 
   useEffect(() => {
     fetchLeaderboard();
+    // โหลดชื่อเล่นที่จำไว้จากครั้งก่อน
+    const savedNickname = localStorage.getItem('snake_nickname');
+    if (savedNickname) {
+      setNickname(savedNickname);
+    }
   }, [fetchLeaderboard]);
 
   // Spawn food at random position
@@ -258,6 +263,9 @@ export default function GamePage() {
   // Start game
   const startGame = () => {
     if (!nickname.trim()) return;
+
+    // จำชื่อเล่นไว้ในเครื่อง
+    localStorage.setItem('snake_nickname', nickname.trim());
 
     // Reset
     snakeRef.current = [{ x: 10, y: 10 }];

@@ -22,6 +22,7 @@ export default function Header() {
     { name: "หน้าแรก", href: "/" },
     { name: "รับสมัครนักศึกษา", href: "/admissions" },
     { name: "อาจารย์", href: "/lecturers" },
+    { name: "🎮 มินิเกม", href: "/game" },
   ];
 
   return (

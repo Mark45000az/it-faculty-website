@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-// GET — ดึง Top 10 คะแนนสูงสุด (ไม่มีชื่อซ้ำแล้วเพราะใช้ player_id เป็น Primary Key)
-export async function GET() {
+// GET — ดึง Top 10 คะแนนสูงสุดของเกมนั้นๆ
+export async function GET(request: NextRequest) {
   try {
     if (!isSupabaseConfigured()) {
       return NextResponse.json({ scores: [] });
     }
 
+    const { searchParams } = new URL(request.url);
+    const gameType = searchParams.get('gameType') || 'snake';
+
     const { data, error } = await supabase
       .from('scores')
       .select('*')
+      .eq('game_type', gameType)
       .order('score', { ascending: false })
       .limit(10);
 
@@ -25,7 +29,7 @@ export async function GET() {
   }
 }
 
-// POST — บันทึกคะแนนใหม่ (อัปเดตถ้าคะแนนเยอะขึ้น หรือแค่เปลี่ยนชื่อ)
+// POST — บันทึกคะแนนใหม่ (อัปเดตถ้าคะแนนเยอะขึ้น)
 export async function POST(request: NextRequest) {
   try {
     if (!isSupabaseConfigured()) {
@@ -36,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { playerId, nickname, score } = body;
+    const { playerId, nickname, score, gameType = 'snake' } = body;
 
     if (!playerId || !nickname || typeof nickname !== 'string' || nickname.trim().length === 0) {
       return NextResponse.json(
@@ -52,11 +56,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. ดึงคะแนนเดิมของผู้เล่นมาดูก่อน
+    // 1. ดึงคะแนนเดิมของผู้เล่นสำหรับเกมนี้
     const { data: existing } = await supabase
       .from('scores')
       .select('score')
       .eq('player_id', playerId)
+      .eq('game_type', gameType)
       .single();
 
     // 2. กำหนดคะแนนที่จะบันทึก (ถ้าคะแนนใหม่น้อยกว่าคะแนนเดิม ให้เก็บคะแนนเดิมไว้)
@@ -65,15 +70,16 @@ export async function POST(request: NextRequest) {
       finalScore = existing.score;
     }
 
-    // 3. ทำการ Upsert (ถ้าไม่มีก็เพิ่มใหม่ ถ้ามีแล้วก็อัปเดต)
+    // 3. ทำการ Upsert โดยต้องมี Unique constraint (player_id, game_type)
     const { data, error } = await supabase
       .from('scores')
       .upsert({
         player_id: playerId,
+        game_type: gameType,
         nickname: nickname.trim().substring(0, 50),
         score: finalScore,
         updated_at: new Date().toISOString()
-      }, { onConflict: 'player_id' })
+      }, { onConflict: 'player_id, game_type' })
       .select()
       .single();
 

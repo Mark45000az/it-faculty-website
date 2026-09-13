@@ -6,13 +6,16 @@
 -- ลบตารางเก่าทิ้งก่อน (เพราะเราเปลี่ยนโครงสร้างใหม่)
 DROP TABLE IF EXISTS scores;
 
--- สร้างตาราง scores ใหม่ โดยใช้ player_id เป็น Primary Key
+-- สร้างตาราง scores ใหม่ (รองรับหลายเกม)
 CREATE TABLE scores (
-  player_id UUID PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  player_id UUID NOT NULL,
+  game_type VARCHAR(20) NOT NULL DEFAULT 'snake',
   nickname VARCHAR(50) NOT NULL,
   score INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(player_id, game_type)
 );
 
 -- เปิด RLS

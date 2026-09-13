@@ -1,0 +1,378 @@
+.gameMain {
+  padding-top: 80px;
+  min-height: 100vh;
+  background-color: var(--navy-950);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.gameHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.backBtn {
+  color: var(--surface);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.gameTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--surface);
+}
+
+.gameTitle h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.gameIcon {
+  font-size: 2.5rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gameCard {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Login Screen */
+.loginScreen {
+  text-align: center;
+  max-width: 400px;
+}
+
+.loginIcon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.loginScreen h2 {
+  font-size: 1.8rem;
+  color: var(--navy-950);
+  margin-bottom: 8px;
+}
+
+.loginScreen p {
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input {
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  font-size: 1.1rem;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  border-color: var(--blue-500);
+}
+
+.playBtn {
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-400));
+  color: var(--navy-950);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.playBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(244, 181, 27, 0.4);
+}
+
+.playBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Playing Screen */
+.playArea {
+  width: 100%;
+}
+
+.statsBar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  background: var(--surface-soft);
+  padding: 16px 24px;
+  border-radius: 16px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statItem span {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.statItem strong {
+  font-size: 1.4rem;
+  color: var(--navy-950);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.card {
+  aspect-ratio: 3/4;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .cardInner, .card.matched .cardInner {
+  transform: rotateY(180deg);
+}
+
+.cardFront, .cardBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.cardFront {
+  background: linear-gradient(135deg, var(--navy-800), var(--navy-950));
+  color: rgba(255,255,255,0.2);
+  font-size: 1.5rem;
+  font-weight: 800;
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+.card:hover .cardFront {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.cardBack {
+  background: white;
+  color: black;
+  transform: rotateY(180deg);
+  font-size: 2.5rem;
+  border: 2px solid var(--border);
+}
+
+.card.matched .cardBack {
+  background: #f0fdf4;
+  border-color: #4ade80;
+}
+
+/* Game Over Screen */
+.gameOverScreen {
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.gameOverScreen h2 {
+  font-size: 2.5rem;
+  color: var(--navy-950);
+  margin-bottom: 24px;
+}
+
+.finalScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.finalScore strong {
+  font-size: 4rem;
+  color: var(--gold-500);
+  line-height: 1;
+}
+
+.gameStats {
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.submitBtn, .playAgainBtn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 12px;
+}
+
+.submitBtn {
+  background: var(--navy-950);
+  color: white;
+}
+
+.submitBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+}
+
+.successMsg {
+  color: #16a34a;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding: 16px;
+  background: #f0fdf4;
+  border-radius: 12px;
+}
+
+.playAgainBtn {
+  background: var(--surface-soft);
+  color: var(--navy-950);
+}
+
+.playAgainBtn:hover {
+  background: #e2e8f0;
+}
+
+/* Leaderboard */
+.leaderboardCard {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.leaderboardHeader {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboardHeader h3 {
+  font-size: 1.2rem;
+  color: var(--navy-950);
+  margin-bottom: 4px;
+}
+
+.leaderboardHeader p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.leaderboardList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboardItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.leaderboardItem.topThree {
+  background: rgba(244, 181, 27, 0.1);
+}
+
+.rank {
+  font-size: 1.2rem;
+  min-width: 30px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.name {
+  flex: 1;
+  font-weight: 600;
+  color: var(--navy-950);
+}
+
+.score {
+  font-weight: 800;
+  color: var(--gold-500);
+}
+
+.emptyLeaderboard {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--muted);
+}

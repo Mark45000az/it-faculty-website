@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-// GET — ดึง Top 10 คะแนนสูงสุด (ไม่ซ้ำชื่อ)
+// GET — ดึง Top 10 คะแนนสูงสุด (ไม่มีชื่อซ้ำแล้วเพราะใช้ player_id เป็น Primary Key)
 export async function GET() {
   try {
     if (!isSupabaseConfigured()) {
@@ -12,33 +12,20 @@ export async function GET() {
       .from('scores')
       .select('*')
       .order('score', { ascending: false })
-      .limit(100);
+      .limit(10);
 
     if (error) {
       console.error('Supabase scores error:', error);
       return NextResponse.json({ scores: [] });
     }
 
-    // เอาเฉพาะคะแนนสูงสุดของแต่ละคน (ไม่ซ้ำชื่อ)
-    const bestScores = new Map<string, typeof data[0]>();
-    for (const entry of data || []) {
-      const existing = bestScores.get(entry.nickname);
-      if (!existing || entry.score > existing.score) {
-        bestScores.set(entry.nickname, entry);
-      }
-    }
-
-    const top10 = Array.from(bestScores.values())
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
-
-    return NextResponse.json({ scores: top10 });
+    return NextResponse.json({ scores: data });
   } catch {
     return NextResponse.json({ scores: [] });
   }
 }
 
-// POST — บันทึกคะแนนใหม่
+// POST — บันทึกคะแนนใหม่ (อัปเดตถ้าคะแนนเยอะขึ้น หรือแค่เปลี่ยนชื่อ)
 export async function POST(request: NextRequest) {
   try {
     if (!isSupabaseConfigured()) {
@@ -49,11 +36,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { nickname, score } = body;
+    const { playerId, nickname, score } = body;
 
-    if (!nickname || typeof nickname !== 'string' || nickname.trim().length === 0) {
+    if (!playerId || !nickname || typeof nickname !== 'string' || nickname.trim().length === 0) {
       return NextResponse.json(
-        { error: 'กรุณาระบุชื่อเล่น' },
+        { error: 'ข้อมูลไม่ครบถ้วน' },
         { status: 400 }
       );
     }
@@ -65,17 +52,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 1. ดึงคะแนนเดิมของผู้เล่นมาดูก่อน
+    const { data: existing } = await supabase
+      .from('scores')
+      .select('score')
+      .eq('player_id', playerId)
+      .single();
+
+    // 2. กำหนดคะแนนที่จะบันทึก (ถ้าคะแนนใหม่น้อยกว่าคะแนนเดิม ให้เก็บคะแนนเดิมไว้)
+    let finalScore = Math.floor(score);
+    if (existing && existing.score > finalScore) {
+      finalScore = existing.score;
+    }
+
+    // 3. ทำการ Upsert (ถ้าไม่มีก็เพิ่มใหม่ ถ้ามีแล้วก็อัปเดต)
     const { data, error } = await supabase
       .from('scores')
-      .insert([{
+      .upsert({
+        player_id: playerId,
         nickname: nickname.trim().substring(0, 50),
-        score: Math.floor(score),
-      }])
+        score: finalScore,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'player_id' })
       .select()
       .single();
 
     if (error) {
-      console.error('Supabase insert score error:', error);
+      console.error('Supabase upsert score error:', error);
       return NextResponse.json(
         { error: 'บันทึกคะแนนไม่สำเร็จ' },
         { status: 500 }

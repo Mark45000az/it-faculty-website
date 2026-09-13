@@ -20,6 +20,7 @@ export default function GamePage() {
   // Game states
   const [gameState, setGameState] = useState<"login" | "playing" | "gameover">("login");
   const [nickname, setNickname] = useState("");
+  const [playerId, setPlayerId] = useState("");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [leaderboard, setLeaderboard] = useState<Score[]>([]);
@@ -50,11 +51,20 @@ export default function GamePage() {
 
   useEffect(() => {
     fetchLeaderboard();
+    
     // โหลดชื่อเล่นที่จำไว้จากครั้งก่อน
     const savedNickname = localStorage.getItem('snake_nickname');
     if (savedNickname) {
       setNickname(savedNickname);
     }
+
+    // โหลดหรือสร้าง Player ID ถาวรประจำเครื่อง
+    let savedPlayerId = localStorage.getItem('snake_player_id');
+    if (!savedPlayerId) {
+      savedPlayerId = crypto.randomUUID();
+      localStorage.setItem('snake_player_id', savedPlayerId);
+    }
+    setPlayerId(savedPlayerId);
   }, [fetchLeaderboard]);
 
   // Spawn food at random position
@@ -331,13 +341,13 @@ export default function GamePage() {
 
   // Submit score
   const submitScore = async () => {
-    if (scoreSubmitted || isSubmitting) return;
+    if (scoreSubmitted || isSubmitting || !playerId) return;
     setIsSubmitting(true);
     try {
       await fetch("/api/scores", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nickname: nickname.trim(), score }),
+        body: JSON.stringify({ playerId, nickname: nickname.trim(), score }),
       });
       setScoreSubmitted(true);
       await fetchLeaderboard();
